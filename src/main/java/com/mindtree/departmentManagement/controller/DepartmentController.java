@@ -34,7 +34,7 @@ public class DepartmentController {
 			return deptService.getAllDetails();
 		} catch (DepartmentServiceException e) {
 			e.printStackTrace();
-			throw new DepartmentManageException("Department not found");
+			throw new DepartmentManageException("Department not found",e);
 		}
 	}
 	
@@ -47,7 +47,7 @@ public class DepartmentController {
 			return new ResponseEntity( pass,HttpStatus.ACCEPTED);
 		} catch (DepartmentServiceException e) {
 			e.printStackTrace();
-			throw new DepartmentManageException("Department not found");
+			throw new DepartmentManageException("Department not found",e);
 		}
 	}
 
@@ -60,8 +60,7 @@ public class DepartmentController {
 			return new ResponseEntity(li,HttpStatus.ACCEPTED);
 		} catch (DepartmentServiceException e) {
 			e.printStackTrace();
-			throw new DepartmentManageException("Department not found");
-//			return new ResponseEntity(e.toString(),HttpStatus.BAD_REQUEST);
+			throw new DepartmentManageException("Department not found",e);
 		}
 	}
 
@@ -72,7 +71,7 @@ public class DepartmentController {
 			pass= deptService.addDepartment(s);
 		} catch (DepartmentServiceException e) {
 			e.printStackTrace();
-			throw new InvalidDepartmentException("Department not found");
+			throw new DepartmentManageException("Department not found",e);
 		}
 		return pass;
 	}

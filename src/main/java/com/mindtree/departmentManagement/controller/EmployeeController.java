@@ -11,8 +11,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mindtree.departmentManagement.dto.EmployeeDto;
 import com.mindtree.departmentManagement.entity.Employee;
 import com.mindtree.departmentManagement.exception.DepartmentManageException;
+import com.mindtree.departmentManagement.exception.DepartmentServiceException;
+import com.mindtree.departmentManagement.exception.EmployeeServiceException;
 import com.mindtree.departmentManagement.exception.InvalidEmployeeException;
 import com.mindtree.departmentManagement.service.serviceImpl.EmployeeServiceImpl;
 
@@ -24,32 +27,38 @@ public class EmployeeController {
 	private EmployeeServiceImpl empService;
 
 	@RequestMapping("/getAllEmployees")
-	public List<Employee> getAllEmployees() {
-		System.out.println("Getting all students");
-		return empService.getAllEmployees();
+	public ResponseEntity<?> getAllEmployees()throws DepartmentManageException {
+		
+		try {
+			System.out.println("Getting all students");
+			return new ResponseEntity(empService.getAllEmployees(),HttpStatus.ACCEPTED);
+		} catch (EmployeeServiceException e) {
+			e.printStackTrace();
+			throw new DepartmentManageException("Cant get employees",e);
+		}
 	}
 
 	@RequestMapping("/getEmployee/{id}")
-	public ResponseEntity<?> getEmployee(@PathVariable int id) throws InvalidEmployeeException{
-		Employee per=null;
+	public ResponseEntity<?> getEmployee(@PathVariable int id) throws DepartmentManageException{
+		EmployeeDto per=null;
 		System.out.println("Getting Employee by id");
 		try {
 			per = empService.getEmployeeById(id);
 			return new ResponseEntity(per,HttpStatus.ACCEPTED);
-		} catch (InvalidEmployeeException e) {
+		} catch (EmployeeServiceException e) {
 			e.printStackTrace();
-			throw new InvalidEmployeeException("Employee not found");
-//			return new ResponseEntity(e.toString(),HttpStatus.BAD_REQUEST);
+			throw new DepartmentManageException("Cant get employees",e);
 		}
 	}
 	
 	@PostMapping("/addEmployee/{id}")
-	public Employee addEmployee(@RequestBody Employee s,@PathVariable int id){
-		Employee stu = null;
+	public EmployeeDto addEmployee(@RequestBody Employee s,@PathVariable int id) throws DepartmentManageException{
+		EmployeeDto stu = null;
 		try {
 			stu = empService.addEmployeeById(s,id);
-		} catch (DepartmentManageException e) {
+		} catch (EmployeeServiceException e) {
 			e.printStackTrace();
+			throw new DepartmentManageException("Cant get employees",e);
 		}
 		return stu;
 	}

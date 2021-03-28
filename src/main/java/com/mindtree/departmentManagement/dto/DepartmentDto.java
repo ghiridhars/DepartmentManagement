@@ -10,13 +10,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class DepartmentDto {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int departmentId;
-		
+
 	private String departmentName;
 	private short strength;
-
+	
 
 	public String getDepartmentName() {
 		return departmentName;
@@ -41,4 +39,11 @@ public class DepartmentDto {
 	public void setDepartmentId(int DepartmentId) {
 		this.departmentId = DepartmentId;
 	}
+
+	@Override
+	public String toString() {
+		return "DepartmentDto [departmentId=" + departmentId + ", departmentName=" + departmentName + ", strength="
+				+ strength + "]";
+	}
+
 }

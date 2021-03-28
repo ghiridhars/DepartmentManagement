@@ -14,6 +14,7 @@ import com.mindtree.departmentManagement.entity.Department;
 import com.mindtree.departmentManagement.entity.Employee;
 import com.mindtree.departmentManagement.exception.DepartmentServiceException;
 import com.mindtree.departmentManagement.exception.InvalidDepartmentException;
+import com.mindtree.departmentManagement.exception.InvalidEmployeeException;
 import com.mindtree.departmentManagement.repository.DepartmentRepo;
 import com.mindtree.departmentManagement.service.DepartmentService;
 
@@ -50,25 +51,23 @@ public class DepartmentServiceImpl implements DepartmentService {
 		List<Department> li = new ArrayList<>();
 		try {
 			departmentRepo.findAll().forEach(li::add);
+			li.stream().findFirst().orElseThrow(() -> new InvalidDepartmentException("Empty result set"));
 			li.sort(new DepartmentComparator());
 			return entityToDto(li);
 		} catch (RuntimeException e) {
-			e.printStackTrace();
-			throw new DepartmentServiceException("Service layer Exception");
+			throw new DepartmentServiceException("Service layer Exception when getting all details",e);
 		}
 	}
 
 	public DepartmentDto getDepartmentById(int id) throws DepartmentServiceException {
-		Department result = departmentRepo.findById(id).orElse(null);
+		Department result = null;
 		try {
-			if (result == null)
-				throw new InvalidDepartmentException("Department ID not found");
-			else
-				return entityToDto(result);
+			result = departmentRepo.findById(id)
+					.orElseThrow(() -> new InvalidDepartmentException("Department ID not found"));
 		} catch (InvalidDepartmentException e) {
-			e.printStackTrace();
-			throw new DepartmentServiceException("Service layer Exception");
+			throw new DepartmentServiceException("Service layer Exception when getting department details",e);
 		}
+		return entityToDto(result);
 	}
 
 	public DepartmentDto addDepartment(DepartmentDto s) throws DepartmentServiceException {
@@ -77,20 +76,23 @@ public class DepartmentServiceImpl implements DepartmentService {
 			Department de = dtoToEntity(s);
 			departmentRepo.save(de);
 		} catch (RuntimeException e) {
-			e.printStackTrace();
-			throw new DepartmentServiceException("Service layer Exception");
+			throw new DepartmentServiceException("Service layer Exception when adding department",e);
 		}
 		return s;
 	}
 
-	public List<Employee> getEmployeesById(int id) throws InvalidDepartmentException {
-		Department col = departmentRepo.findById(id).orElse(null);
-		List<Employee> li = new ArrayList<>();
-		if (col != null)
-			li = col.getEmployees();
-		else
-			throw new InvalidDepartmentException("Department not found");
-		li.sort(new EmployeeComparator());
+	public List<Employee> getEmployeesById(int id) throws DepartmentServiceException {
+		Department result = null;
+
+		List<Employee> li;
+		try {
+			result = departmentRepo.findById(id)
+					.orElseThrow(() -> new InvalidDepartmentException("Department ID not found"));
+			li = result.getEmployees();
+			li.sort(new EmployeeComparator());
+		} catch (InvalidDepartmentException e) {
+			throw new DepartmentServiceException("Service layer Exception when fetching employees of a department",e);
+		}
 		return li;
 	}
 

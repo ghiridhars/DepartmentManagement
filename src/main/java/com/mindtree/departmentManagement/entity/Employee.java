@@ -15,13 +15,13 @@ public class Employee {
 	private int employeeId;
 	private String name;
 	private String city;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDate = new Date();
-	
+
 	private float salary;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JsonIgnore
 	private Department department;
 
@@ -30,10 +30,9 @@ public class Employee {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Employee(int employeeId, String name, String city, float salary,
-			com.mindtree.departmentManagement.entity.Department department) {
+	public Employee(int employeeId, String name, String city, float salary, Department department) {
 		super();
-		employeeId = employeeId;
+		this.employeeId = employeeId;
 		this.name = name;
 		this.city = city;
 		this.salary = salary;
@@ -80,4 +79,9 @@ public class Employee {
 		this.department = department;
 	}
 
+	@Override
+	public String toString() {
+		return "Employee [employeeId=" + employeeId + ", name=" + name + ", city=" + city + ", createdDate="
+				+ createdDate + ", salary=" + salary + ", department=" + department + "]";
+	}
 }

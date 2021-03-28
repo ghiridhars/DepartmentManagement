@@ -52,4 +52,8 @@ public class EmployeeDto {
 		this.designation = designation;
 	}
 
+	@Override
+	public String toString() {
+		return "EmployeeDto [id=" + id + ", name=" + name + ", salary=" + salary + ", designation=" + designation + "]";
+	}
 }

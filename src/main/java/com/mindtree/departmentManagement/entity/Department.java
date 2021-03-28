@@ -15,14 +15,14 @@ public class Department {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int departmentId;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDate = new Date();
-	
+
 	private String departmentName;
 	private short strength;
 
-	@OneToMany(fetch = FetchType.EAGER,mappedBy = "department")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "department")
 	private List<Employee> employees;
 
 	public Department() {
@@ -30,12 +30,22 @@ public class Department {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Department(int DepartmentId, String DepartmentName, short strength, List<Employee> employees) {
+	public Department(int departmentId, Date createdDate, String departmentName, short strength,
+			List<Employee> employees) {
 		super();
-		this.departmentId = DepartmentId;
-		this.departmentName = DepartmentName;
+		this.departmentId = departmentId;
+		this.createdDate = createdDate;
+		this.departmentName = departmentName;
 		this.strength = strength;
 		this.employees = employees;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
 	}
 
 	public String getDepartmentName() {
@@ -68,6 +78,12 @@ public class Department {
 
 	public void setEmployees(List<Employee> employees) {
 		this.employees = employees;
+	}
+
+	@Override
+	public String toString() {
+		return "Department [departmentId=" + departmentId + ", createdDate=" + createdDate + ", departmentName="
+				+ departmentName + ", strength=" + strength + ", employees=" + employees + "]";
 	}
 
 }
